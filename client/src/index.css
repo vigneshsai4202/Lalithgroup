@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-green-deep: #1F4D3A;
+  --color-green-mid: #2d6b52;
+  --color-green-light: #e8f5ee;
+  --color-gold: #D9A441;
+  --color-gold-light: #f5e6c0;
+  --color-cream: #FAF6EC;
+  --color-charcoal: #222222;
+  --color-gray-soft: #6b7280;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", "Poppins", system-ui, sans-serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-charcoal);
+    background: #fff;
+  }
+  h1, h2, h3 { font-family: var(--font-serif); }
+}
+
+@layer utilities {
+  .font-serif { font-family: var(--font-serif); }
+  .text-green-deep { color: var(--color-green-deep); }
+  .text-gold { color: var(--color-gold); }
+  .bg-green-deep { background-color: var(--color-green-deep); }
+  .bg-gold { background-color: var(--color-gold); }
+  .bg-cream { background-color: var(--color-cream); }
+  .bg-green-light { background-color: var(--color-green-light); }
+  .bg-gold-light { background-color: var(--color-gold-light); }
+  .border-gold { border-color: var(--color-gold); }
+  .border-green-deep { border-color: var(--color-green-deep); }
+  .hover\:bg-gold:hover { background-color: var(--color-gold); }
+  .hover\:text-gold:hover { color: var(--color-gold); }
+  .hover\:bg-green-deep:hover { background-color: var(--color-green-deep); }
+}
