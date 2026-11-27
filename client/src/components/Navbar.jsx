@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu, FiX, FiChevronDown } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
 
 const links = [
@@ -20,18 +21,18 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handler);
+    const handler = () => setScrolled(window.scrollY > 30);
+    window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  const navClass = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-    scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+  const navClass = `fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+    scrolled ? 'glass-white shadow-sm py-2' : 'bg-transparent py-4'
   }`;
 
   const linkClass = ({ isActive }) =>
-    `text-sm font-medium transition-colors hover:text-gold ${
-      isActive ? 'text-gold' : scrolled ? 'text-charcoal' : 'text-white'
+    `text-sm font-medium transition-all duration-200 link-underline ${
+      isActive ? 'text-gold' : scrolled ? 'text-charcoal hover:text-gold' : 'text-white/90 hover:text-white'
     }`;
 
   return (
@@ -42,33 +43,67 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop */}
-        <div className="hidden lg:flex items-center gap-6">
-          {links.map(l => <NavLink key={l.to} to={l.to} end={l.to === '/'} className={linkClass}>{l.label}</NavLink>)}
-          <Link to="/contact" className="bg-gold text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-yellow-600 transition-colors">
+        <div className="hidden lg:flex items-center gap-7">
+          {links.map(l => (
+            <NavLink key={l.to} to={l.to} end={l.to === '/'} className={linkClass}>
+              {l.label}
+            </NavLink>
+          ))}
+          <Link
+            to="/contact"
+            className="bg-gold text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:brightness-110 transition-all shadow-md shadow-gold/20 hover:shadow-gold/40 hover:-translate-y-0.5"
+          >
             Get Quote
           </Link>
         </div>
 
         {/* Mobile toggle */}
-        <button className={`lg:hidden p-2 ${scrolled ? 'text-charcoal' : 'text-white'}`} onClick={() => setOpen(!open)} aria-label="Toggle menu">
+        <button
+          className={`lg:hidden p-2 rounded-lg transition-colors ${scrolled ? 'text-charcoal hover:bg-gray-100' : 'text-white hover:bg-white/10'}`}
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+        >
           {open ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
       </div>
 
       {/* Mobile menu */}
-      {open && (
-        <div className="lg:hidden bg-white border-t shadow-lg px-4 py-4 flex flex-col gap-3">
-          {links.map(l => (
-            <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setOpen(false)}
-              className={({ isActive }) => `text-sm font-medium py-1 ${isActive ? 'text-gold' : 'text-charcoal'}`}>
-              {l.label}
-            </NavLink>
-          ))}
-          <Link to="/contact" onClick={() => setOpen(false)} className="bg-gold text-white text-sm font-semibold px-4 py-2 rounded-full text-center mt-2">
-            Get Quote
-          </Link>
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="lg:hidden overflow-hidden bg-white border-t border-gray-100 shadow-xl"
+          >
+            <div className="px-4 py-4 flex flex-col gap-1">
+              {links.map(l => (
+                <NavLink
+                  key={l.to}
+                  to={l.to}
+                  end={l.to === '/'}
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `text-sm font-medium py-2.5 px-3 rounded-lg transition-colors ${
+                      isActive ? 'text-gold bg-gold-light' : 'text-charcoal hover:bg-gray-50 hover:text-gold'
+                    }`
+                  }
+                >
+                  {l.label}
+                </NavLink>
+              ))}
+              <Link
+                to="/contact"
+                onClick={() => setOpen(false)}
+                className="bg-gold text-white text-sm font-semibold px-4 py-3 rounded-full text-center mt-3 hover:brightness-110 transition-all"
+              >
+                Get Quote
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
